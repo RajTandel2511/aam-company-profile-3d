@@ -1,0 +1,295 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * All Air Mechanical — 3D model edition. A BIM viewport at night: a near-black
+ * void, hairline grids, and the logo's three streams as the three airflows
+ * (supply blue, exhaust green, return red).
+ *
+ * Brand originals (red / blue / green) are FILLS — lines, streams, 3D systems.
+ * Small TEXT on the dark surfaces uses the "-glow" variants (all >= 4.5:1 on
+ * void); "-ink" variants remain for the rare light surface. Colours are RGB
+ * channels so Tailwind opacity modifiers work (bg-blue/10).
+ */
+
+@layer base {
+  :root {
+    /* dark surfaces */
+    --void-rgb: 9 11 14; /* #090B0E page */
+    --deep-rgb: 13 16 20; /* #0D1014 alternate section */
+    --panel-rgb: 20 24 29; /* #14181D raised panel */
+    --raised-rgb: 28 33 40; /* #1C2128 hover / second level */
+    --hair-rgb: 42 49 58; /* #2A313A hairlines */
+
+    /* text on dark (contrast on void) */
+    --chalk-rgb: 236 240 244; /* #ECF0F4 primary   ~17:1 */
+    --mist-rgb: 196 204 213; /* #C4CCD5 secondary ~12:1 */
+    --fog-rgb: 138 148 160; /* #8A94A0 muted      ~6.3:1 */
+    --signal-rgb: 230 238 245; /* controls lines in the model */
+
+    /* light surfaces (kept for print-like moments) */
+    --paper-rgb: 245 245 242;
+    --white-rgb: 255 255 255;
+    --ink-rgb: 29 31 34;
+    --graphite-rgb: 96 96 96; /* logo grey */
+    --silver-rgb: 162 162 162; /* logo light grey */
+
+    /* brand — from the logo */
+    --red-rgb: 234 54 42; /* #EA362A */
+    --blue-rgb: 0 120 192; /* #0078C0 */
+    --green-rgb: 0 168 72; /* #00A848 */
+    --red-ink-rgb: 196 43 33; /* white on it 5.6:1 */
+    --blue-ink-rgb: 0 107 171;
+    --green-ink-rgb: 0 125 53;
+    --red-glow-rgb: 240 88 77; /* #F0584D text on void 5.4:1 */
+    --blue-glow-rgb: 63 163 230; /* #3FA3E6 text on void 6.6:1 */
+    --green-glow-rgb: 47 203 110; /* #2FCB6E text on void 8.6:1 */
+
+    --paper: rgb(var(--paper-rgb));
+    --white: rgb(var(--white-rgb));
+    --ink: rgb(var(--ink-rgb));
+    --graphite: rgb(var(--graphite-rgb));
+    --silver: rgb(var(--silver-rgb));
+    --void: rgb(var(--void-rgb));
+    --deep: rgb(var(--deep-rgb));
+    --panel: rgb(var(--panel-rgb));
+    --hair: rgb(var(--hair-rgb));
+    --chalk: rgb(var(--chalk-rgb));
+    --mist: rgb(var(--mist-rgb));
+    --fog: rgb(var(--fog-rgb));
+    --red: rgb(var(--red-rgb));
+    --blue: rgb(var(--blue-rgb));
+    --green: rgb(var(--green-rgb));
+    --red-glow: rgb(var(--red-glow-rgb));
+    --blue-glow: rgb(var(--blue-glow-rgb));
+    --green-glow: rgb(var(--green-glow-rgb));
+
+    /* next/font sets --font-montserrat / --font-jetbrains on <html> (self-hosted, metric-matched fallbacks) */
+    --font-sans: var(--font-montserrat, "Montserrat"), ui-sans-serif, system-ui, sans-serif;
+    --font-mono: var(--font-jetbrains, "JetBrains Mono"), ui-monospace, SFMono-Regular, monospace;
+
+    --gutter: 20px;
+    --nav-h: 64px;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    color-scheme: dark;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --gutter: 48px;
+      --nav-h: 72px;
+    }
+  }
+
+  * {
+    min-width: 0;
+  }
+
+  html {
+    background: var(--void);
+    scroll-padding-top: calc(var(--nav-h) + 16px);
+  }
+
+  body {
+    background: var(--void);
+    color: var(--chalk);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+  }
+
+  ::selection {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--blue-glow);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /*
+   * anime.js split headlines: hidden (JS only) until split, so the unsplit text
+   * never flashes. If the script never runs, the fallback reveals it at 2.5 s.
+   */
+  .js [data-split]:not([data-split-ready]) {
+    opacity: 0;
+    animation: split-fallback 0s linear 2.5s forwards;
+  }
+
+  @keyframes split-fallback {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Lenis smooth scroll (from lenis/dist/lenis.css) */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+}
+
+@layer components {
+  /*
+   * First-paint entrance that needs no JS: copy is in the server HTML and rises
+   * in on load (delay via --d). Reduced motion: no animation at all.
+   */
+  .rise {
+    animation: rise 0.6s var(--ease-out) var(--d, 0s) both;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise {
+      animation: none;
+    }
+  }
+}
+
+@layer components {
+  /* Heavy geometric display — Montserrat echoes the logo's wordmark. */
+  .display {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.96;
+  }
+
+  /* Spec-sheet label: the BIM annotation voice. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Tiny viewport annotation (levels, grid bubbles, tags, readouts). */
+  .hud {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .container-x {
+    width: 100%;
+    max-width: 1320px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /*
+   * A raised panel in the viewport — Revit's properties palette, at night.
+   * Deliberately no backdrop-filter: re-blurring a live WebGL canvas every frame
+   * costs whole frames, so the panel is near-opaque with a faint top sheen instead.
+   */
+  .glass {
+    background: linear-gradient(rgb(var(--chalk-rgb) / 0.035), transparent 40%), rgb(var(--panel-rgb) / 0.9);
+    border: 1px solid rgb(var(--hair-rgb));
+    box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.75);
+  }
+
+  /* BIM tag: a bordered mono label. */
+  .bim-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 3px 7px;
+    border: 1px solid rgb(var(--chalk-rgb) / 0.28);
+    border-radius: 3px;
+    background: rgb(var(--void-rgb) / 0.75);
+    color: rgb(var(--chalk-rgb));
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Faint drafting grid for dark sections. */
+  .blueprint {
+    background-image: linear-gradient(rgb(var(--hair-rgb) / 0.45) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--hair-rgb) / 0.45) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 15px 26px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    border: 1.5px solid transparent;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* White on the text-safe red (5.6:1). Brand red would fail AA here. */
+  .btn-primary {
+    background: rgb(var(--red-ink-rgb));
+    color: #fff;
+  }
+
+  /* darker on hover: white stays >= 4.5:1 (brand red would drop to 4.2:1) */
+  .btn-primary:hover {
+    background: #a8231b;
+  }
+
+  .btn-ghost {
+    border-color: rgb(var(--chalk-rgb) / 0.35);
+    color: rgb(var(--chalk-rgb));
+  }
+
+  .btn-ghost:hover {
+    border-color: rgb(var(--chalk-rgb));
+    background: rgb(var(--chalk-rgb) / 0.06);
+  }
+}
